@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大腦互動區塊</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      position: relative;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .region {
+      cursor: pointer;
+      transition: fill 0.3s;
+    }
+    .region:hover,
+    .region.active {
+      fill: #ff9999 !important;
+    }
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      pointer-events: none;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 假設的大腦圖，用簡單形狀取代 -->
+    <svg viewBox="0 0 200 200">
+      <path id="region1" class="region" d="M20,20 h70 v70 h-70 z" fill="#ccc" />
+      <path id="region2" class="region" d="M110,20 h70 v70 h-70 z" fill="#ccc" />
+      <path id="region3" class="region" d="M20,110 h70 v70 h-70 z" fill="#ccc" />
+      <path id="region4" class="region" d="M110,110 h70 v70 h-70 z" fill="#ccc" />
+    </svg>
+    <div id="tooltip" class="tooltip"></div>
+  </div>
+
+  <script>
+    const tooltip = document.getElementById("tooltip");
+    const regions = document.querySelectorAll(".region");
+    const regionInfo = {
+      region1: "左上區塊：記憶區",
+      region2: "右上區塊：邏輯區",
+      region3: "左下區塊：情感區",
+      region4: "右下區塊：運動區"
+    };
+
+    regions.forEach(region => {
+      region.addEventListener("mouseenter", (e) => {
+        if (!isMobile()) showTooltip(e);
+      });
+      region.addEventListener("mouseleave", hideTooltip);
+      region.addEventListener("click", (e) => {
+        if (isMobile()) toggleTooltip(e);
+      });
+    });
+
+    function showTooltip(e) {
+      const id = e.target.id;
+      tooltip.innerText = regionInfo[id];
+      tooltip.style.left = e.pageX + 10 + "px";
+      tooltip.style.top = e.pageY + 10 + "px";
+      tooltip.style.display = "block";
+      e.target.classList.add("active");
+    }
+
+    function hideTooltip(e) {
+      tooltip.style.display = "none";
+      e.target.classList.remove("active");
+    }
+
+    function toggleTooltip(e) {
+      const id = e.target.id;
+      const isActive = e.target.classList.contains("active");
+      regions.forEach(r => r.classList.remove("active"));
+      if (!isActive) {
+        tooltip.innerText = regionInfo[id];
+        tooltip.style.left = e.pageX + 10 + "px";
+        tooltip.style.top = e.pageY + 10 + "px";
+        tooltip.style.display = "block";
+        e.target.classList.add("active");
+      } else {
+        tooltip.style.display = "none";
+      }
+    }
+
+    function isMobile() {
+      return window.innerWidth < 768;
+    }
+  </script>
+</body>
+</html>
